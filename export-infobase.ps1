@@ -5,6 +5,12 @@
 #  * блокирует соединений с ИБ
 #  * разрывает активные сессии в ИБ
 
+param([string]$InfoBaseName, [string]$ServerName = "$Env:Computername", [string]$strLogPath = 'C:\Logs')
+
+# Проверяем входные параметры. Если нету - убегаем.
+if (!$strDBName) { "Database name is missing."; exit 11}
+if (!$strServerName) { "Servername name is missing."; exit 12}
+
 function Write-LogFile([string]$logFileName)
 {
     Process
@@ -60,11 +66,8 @@ $str1CPath='C:\Program Files (x86)\1cv82\common\1cestart.exe'
 if (!(Test-Path $str1CPath)) { "1C is missing at $str1CPath" ; exit 13 }
 
 # Параметры запуска: адрес сервера, основной порт кластера, информационная база
-$ServerName = $env:computername
 $ServerAddress = 'tcp://' + $ServerName + ':1540'
 $MainPort = "1541"
-$InfoBaseName = "UT"
-[string]$strLogPath = 'C:\Logs'
 
 # Устанавливаем переменные для дат
 $StartYear = Get-Date -uFormat %Y
