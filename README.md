@@ -8,8 +8,9 @@ Powershell script for exporting 1C 8.2 infobase to .dt file.
 
 Пример использования:
 
-PS> .\export-infobaseюзы1 BP
-где BP - это имя информационной базы на сервере 1С.
+PS> .\export-infobase.ps1 InfoBaseName
+
+где InfoBaseName - это имя информационной базы на сервере 1С.
 
 На данный момент пишет логи в C:\Logs а DT в C:\1C_Backup\$Year\$InfoBaseName
 
