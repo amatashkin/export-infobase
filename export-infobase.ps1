@@ -80,6 +80,9 @@ $strDBPath = "$ServerName\$InfoBaseName"
 $strBackupPath = "C:\1C_Backup\$StartYear\$InfoBaseName"
 if (!(test-path $strBackupPath)) {new-item $strBackupPath -type directory}
 $strBackupName = "$strBackupPath\$InfoBaseName`_$StartDate`_$TimeStamp.dt"
+# Параметры запуска для 1С:
+$arguments1C = "CONFIG /S `"$strDBPath`" /DisableStartupMessages /DumpIB `"$strBackupName`" /Out `"$strLogName`" -NoTruncate /UC `"$StartYear`" "
+
 
 $V82Com = New-Object -COMObject "V82.COMConnector"
 
