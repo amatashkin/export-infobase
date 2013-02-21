@@ -103,7 +103,7 @@ foreach ($Cluster in $Clusters)
     {
         $ClusterFound = $True    
         # Пишем в лог о находке
-        "Найден кластер серверов: " + $Cluster | Write-LogFile $strLogName
+        "Найден кластер серверов: " + $Cluster.Name + " на " + $Cluster.HostName | Write-LogFile $strLogName
         break
     }
 }
@@ -173,13 +173,14 @@ $Base = $ServerAgent.GetInfoBases($Cluster) | ? {$_.Name -eq $InfoBaseName}
 $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 
 # Пишем в лог количество сессий
-write-host "Найдено сессий: " $Sessions.Count
-"Найдено сессий: " + $Sessions.Count | Write-LogFile $strLogName
+write-host "Останавливаем сессий: " $Sessions.Count
+"Останавливаем сессий: " + $Sessions.Count | Write-LogFile $strLogName
 $Sessions | ft | Write-LogFile $strLogName
 
 # Завершаем сессисии
 foreach ($Session in $Sessions)
 {
+    $Session | select host, username, appid, startedat | ft -AutoSize -HideTableHeaders | Out-String -Stream | Write-LogFile $strLogName
     $ServerAgent.TerminateSession($Cluster,$Session)
 }
 
@@ -189,7 +190,7 @@ if (!($Sessions.Count -eq 0))
 {
     write-host "Не удалость отключить сессий:" $Sessions.Count
     # Ошибка. Пишем в лог. Не удалость отключить часть сесссий
-    "Не удалость отключить сессий:" + $Sessions.Count | Write-LogFile $strLogName
+    "Не удалость отключить сессий: " + $Sessions.Count | Write-LogFile $strLogName
     $Sessions | ft | Write-LogFile $strLogName
 }
 
