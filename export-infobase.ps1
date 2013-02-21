@@ -180,7 +180,7 @@ $Sessions | ft | Write-LogFile $strLogName
 # Завершаем сессисии
 foreach ($Session in $Sessions)
 {
-    $Session | select host, username, appid, startedat | ft -AutoSize -HideTableHeaders | Out-String -Stream | Write-LogFile $strLogName
+    "Пользователь " + $Session.username + " на " + $Session.host + " начало работы " + $Session.startedat.datetime + " приложение " + $Session.appid | Write-LogFile $strLogName
     $ServerAgent.TerminateSession($Cluster,$Session)
 }
 
