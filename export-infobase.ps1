@@ -60,10 +60,26 @@ $str1CPath='C:\Program Files (x86)\1cv82\common\1cestart.exe'
 if (!(Test-Path $str1CPath)) { "1C is missing at $str1CPath" ; exit 13 }
 
 # Параметры запуска: адрес сервера, основной порт кластера, информационная база
-$hostname = $env:computername
-$ServerAddress = 'tcp://' + $hostname + ':1540'
+$ServerName = $env:computername
+$ServerAddress = 'tcp://' + $ServerName + ':1540'
 $MainPort = "1541"
 $InfoBaseName = "UT"
+[string]$strLogPath = 'C:\Logs'
+
+# Устанавливаем переменные для дат
+$StartYear = Get-Date -uFormat %Y
+$TimeStamp  = Get-Date -uFormat %H%M%S
+$StartDate = Get-Date -uFormat %Y-%m-%d
+$StartTime = Get-Date -uFormat %H:%M:%S
+
+# Проверяем наличие директории для логов и бекапов.
+# Создаем всякие пути.
+if (!(test-path $strLogPath)) {new-item $strLogPath -type directory}
+$strLogName = $strLogPath + '\' + 'export-infobase.' + $InfoBaseName + '.log'
+$strDBPath = "$ServerName\$InfoBaseName"
+$strBackupPath = "C:\1C_Backup\$StartYear\$InfoBaseName"
+if (!(test-path $strBackupPath)) {new-item $strBackupPath -type directory}
+$strBackupName = "$strBackupPath\$InfoBaseName`_$StartDate`_$TimeStamp.dt"
 
 $V82Com = New-Object -COMObject "V82.COMConnector"
 
