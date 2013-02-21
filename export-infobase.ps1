@@ -87,6 +87,8 @@ $strBackupName = "$strBackupPath\$InfoBaseName`_$StartDate`_$TimeStamp.dt"
 # Параметры запуска для 1С:
 $arguments1C = "CONFIG /S `"$strDBPath`" /DisableStartupMessages /DumpIB `"$strBackupName`" /Out `"$strLogName`" -NoTruncate /UC `"$StartYear`" "
 
+"==========================================" | Write-LogFile $strLogName
+"Job started $StartDate at $StartTime" | Write-LogFile $strLogName
 
 $V82Com = New-Object -COMObject "V82.COMConnector"
 
@@ -100,8 +102,9 @@ foreach ($Cluster in $Clusters)
     if ($Cluster.MainPort -eq $MainPort)
     {
         $ClusterFound = $True    
-        break
         # Пишем в лог о находке
+        "Найден кластер серверов: " + $Cluster | Write-LogFile $strLogName
+        break
     }
 }
 
@@ -110,6 +113,7 @@ if (!($ClusterFound))
 {
      # Пишем в лог что кластер не найден
      write-host "Не найден кластер серверов 1С"
+     "Не найден кластер серверов 1С" | Write-LogFile $strLogName
      break
 }
 
@@ -154,6 +158,7 @@ foreach ($WorkingProcess in $WorkingProcesses)
 if (!($InfoBaseFound))
 {
     write-host 'Не найдена указанная информационная база.'
+    'Не найдена указанная информационная база.' | Write-LogFile $strLogName
     # пишем в лог
     break
 }
@@ -169,7 +174,8 @@ $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 
 # Пишем в лог количество сессий
 write-host "Найдено сессий: " $Sessions.Count
-$Sessions | ft
+"Найдено сессий: " $Sessions.Count | Write-LogFile $strLogName
+$Sessions | ft | Write-LogFile $strLogName
 
 # Завершаем сессисии
 foreach ($Session in $Sessions)
@@ -182,16 +188,15 @@ $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 if (!($Sessions.Count -eq 0))
 {
     write-host "Не удалость отключить сессий:" $Sessions.Count
-    $Sessions | ft
     # Ошибка. Пишем в лог. Не удалость отключить часть сесссий
+    "Не удалость отключить сессий:" $Sessions.Count | Write-LogFile $strLogName
+    $Sessions | ft | Write-LogFile $strLogName
 }
 
 # ===============================================
 # 
 # Пробуем выгрузить .DT
 write-host "Выгрузка ИБ..."
-"==========================================" | Write-LogFile $strLogName
-"Job started $StartDate at $StartTime" | Write-LogFile $strLogName
 "Trying to backup $InfoBaseName at $ServerName" | Write-LogFile $strLogName
 "Starting $str1CPath" | Write-LogFile $strLogName
 "with parameters: $arguments1C" | Write-LogFile $strLogName
@@ -204,11 +209,20 @@ $EndTime = Get-Date -uFormat %H:%M:%S
 if ($Finished)
 {
     "Success. Job finished $EndDate at $EndTime" | Write-LogFile $strLogName
+    # Снятие блокировки соединений ИБ и кода доступа
+    $InfoBase.ConnectDenied = $False
+    $InfoBase.PermissionCode = ""
+    $CWP.UpdateInfoBase($InfoBase)
+    "Разблокировали базу" | Write-LogFile $strLogName
     "==========================================" | Write-LogFile $strLogName
 }
 else
 {
     "Error. Job stopped by timeout $EndDate at $EndTime" | Write-LogFile $strLogName
+    $InfoBase.ConnectDenied = $False
+    $InfoBase.PermissionCode = ""
+    $CWP.UpdateInfoBase($InfoBase)
+    "Разблокировали базу" | Write-LogFile $strLogName
     "==========================================" | Write-LogFile $strLogName
     exit 10
 }
@@ -216,9 +230,6 @@ else
 # 
 # ===============================================
 
-# Снятие блокировки соединений ИБ и кода доступа
-$InfoBase.ConnectDenied = $False
-$InfoBase.PermissionCode = ""
-$CWP.UpdateInfoBase($InfoBase)
+
 
 $V82Com = ""
