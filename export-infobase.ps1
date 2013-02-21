@@ -186,7 +186,29 @@ if (!($Sessions.Count -eq 0))
 # 
 # Пробуем выгрузить .DT
 write-host "Выгрузка ИБ..."
-start powershell -ArgumentList "C:\temp\save-DT.ps1 test rutest01;exit $LASTEXITCODE"
+"==========================================" | Write-LogFile $strLogName
+"Job started $StartDate at $StartTime" | Write-LogFile $strLogName
+"Trying to backup $strDBName at $strServerName" | Write-LogFile $strLogName
+"Starting $str1CPath" | Write-LogFile $strLogName
+"with parameters: $arguments1C" | Write-LogFile $strLogName
+
+# Starting with default timeout 60 minutes
+$Finished = Start-ProcessTree $str1CPath $arguments1C -WaitForChildProcesses 
+
+$EndDate = Get-Date -uFormat %Y-%m-%d
+$EndTime = Get-Date -uFormat %H:%M:%S
+if ($Finished) 
+{
+"Success. Job finished $EndDate at $EndTime" | Write-LogFile $strLogName
+"==========================================" | Write-LogFile $strLogName
+}
+else
+{
+"Error. Job stopped by timeout $EndDate at $EndTime" | Write-LogFile $strLogName
+"==========================================" | Write-LogFile $strLogName
+exit 10
+}
+
 # 
 # ===============================================
 
