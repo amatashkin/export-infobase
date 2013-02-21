@@ -92,22 +92,22 @@ $ServerAgent = $V82Com.ConnectAgent($ServerAddress)
 # Поиск нужного кластера
 $Clusters = $ServerAgent.GetClusters()
 foreach ($Cluster in $Clusters)
-    {
+{
     if ($Cluster.MainPort -eq $MainPort)
-        {
+    {
         $ClusterFound = $True    
         break
         # Пишем в лог о находке
-        }
     }
+}
 
 # Проверка кластера
 if (!($ClusterFound))
-    {
+{
      # Пишем в лог что кластер не найден
      write-host "Не найден кластер серверов 1С"
      break
-    }
+}
 
 # Аутентификация к выбранному кластеру
 # если у пользователя под которым будет выполняться сценарий нет прав на кластер,
@@ -119,11 +119,11 @@ $WorkingProcesses = $ServerAgent.GetWorkingProcesses($Cluster)
 
 # Поиск нужной базы
 foreach ($WorkingProcess in $WorkingProcesses)
-    {
+{
     if (!($WorkingProcess.Running -eq 1) )
-        {
+    {
         continue   
-        }
+    }
      
     $CWPAddr = "tcp://"+$WorkingProcess.HostName+":"+$WorkingProcess.MainPort  
     $CWP= $V82Com.ConnectWorkingProcess($CWPAddr)
@@ -132,27 +132,27 @@ foreach ($WorkingProcess in $WorkingProcesses)
     $InfoBases = $CWP.GetInfoBases()
     
     foreach ($InfoBase in $InfoBases)
-        {
+    {
         if ($InfoBase.Name -eq $InfoBaseName )
-            {
+        {
             $InfoBaseFound = $True
             break
-            }
-        }
-
-    if ($InfoBaseFound)
-        {
-        break
         }
     }
+
+    if ($InfoBaseFound)
+    {
+        break
+    }
+}
 
 # Проверка базы
 if (!($InfoBaseFound))
-    {
+{
     write-host "Не найдена указанная информационная база."
     # пишем в лог
     break
-    }
+}
 
 # Установка блокировки соединений ИБ и кода доступа (текущий год)
 $InfoBase.ConnectDenied = $True
@@ -169,18 +169,18 @@ $Sessions | ft
 
 # Завершаем сессисии
 foreach ($Session in $Sessions)
-    {
+{
     $ServerAgent.TerminateSession($Cluster,$Session)
-    }
+}
 
 # Проверяем что все отключилось
 $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 if (!($Sessions.Count -eq 0))
-    {
+{
     write-host "Не удалость отключить сессий:" $Sessions.Count
     $Sessions | ft
     # Ошибка. Пишем в лог. Не удалость отключить часть сесссий
-    }
+}
 
 # ===============================================
 # 
@@ -197,16 +197,16 @@ $Finished = Start-ProcessTree $str1CPath $arguments1C -WaitForChildProcesses
 
 $EndDate = Get-Date -uFormat %Y-%m-%d
 $EndTime = Get-Date -uFormat %H:%M:%S
-if ($Finished) 
+if ($Finished)
 {
-"Success. Job finished $EndDate at $EndTime" | Write-LogFile $strLogName
-"==========================================" | Write-LogFile $strLogName
+    "Success. Job finished $EndDate at $EndTime" | Write-LogFile $strLogName
+    "==========================================" | Write-LogFile $strLogName
 }
 else
 {
-"Error. Job stopped by timeout $EndDate at $EndTime" | Write-LogFile $strLogName
-"==========================================" | Write-LogFile $strLogName
-exit 10
+    "Error. Job stopped by timeout $EndDate at $EndTime" | Write-LogFile $strLogName
+    "==========================================" | Write-LogFile $strLogName
+    exit 10
 }
 
 # 
