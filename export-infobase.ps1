@@ -188,7 +188,7 @@ if (!($Sessions.Count -eq 0))
 write-host "Выгрузка ИБ..."
 "==========================================" | Write-LogFile $strLogName
 "Job started $StartDate at $StartTime" | Write-LogFile $strLogName
-"Trying to backup $strDBName at $strServerName" | Write-LogFile $strLogName
+"Trying to backup $InfoBaseName at $ServerName" | Write-LogFile $strLogName
 "Starting $str1CPath" | Write-LogFile $strLogName
 "with parameters: $arguments1C" | Write-LogFile $strLogName
 
