@@ -15,6 +15,10 @@ $V82Com = ""
 $ClusterFound = $False
 $InfoBaseFound = $False
 
+# Указываем путь к 1С и проверяем наличие.
+$str1CPath='C:\Program Files (x86)\1cv82\common\1cestart.exe'
+if (!(Test-Path $str1CPath)) { "1C is missing at $str1CPath" ; exit 13 }
+
 # Параметры запуска: адрес сервера, основной порт кластера, информационная база
 $hostname = $env:computername
 $ServerAddress = 'tcp://' + $hostname + ':1540'
