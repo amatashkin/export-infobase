@@ -16,6 +16,35 @@ function Write-LogFile([string]$logFileName)
     }
 }
 
+function Start-ProcessTree([string]$FilePath = $(Read-Host "Supply a value for the FilePath parameter"),[string]$ArgumentList,[int]$TimeoutMin = 60,[switch]$WaitForChildProcesses)
+{
+    $Timeoutms = $TimeoutMin * 60 * 1000
+    $ProcessStartInfo = New-Object System.Diagnostics.ProcessStartInfo $FilePath
+    if ($ArgumentList) { $ProcessStartInfo.Arguments = $ArgumentList }
+    $Process = [System.Diagnostics.Process]::Start($ProcessStartInfo)
+    $ProcessId = $Process.Id
+    $ProcessStartTime = $Process.StartTime
+    $ProcessCompleted = $Process.WaitForExit($Timeoutms)
+    while ($WaitForChildProcesses -and $ProcessCompleted)
+    {
+      [array]$ChildProcesses = Get-WmiObject Win32_Process -Filter "ParentProcessId = $ProcessId"
+      if (!$ChildProcesses.Count)
+      {
+        break
+      }
+      $Elapsedms = (New-TimeSpan $ProcessStartTime (Get-Date)).TotalMilliseconds
+      if ($Elapsedms -lt $Timeoutms)
+      {
+        Start-Sleep -Seconds 1
+      }
+      else
+      {
+        $ProcessCompleted = $false
+      }
+    }
+    return $ProcessCompleted
+}
+
 # Init
 $Cluster = ""
 $Clusters = ""
