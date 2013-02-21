@@ -174,7 +174,7 @@ $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 
 # Пишем в лог количество сессий
 write-host "Найдено сессий: " $Sessions.Count
-"Найдено сессий: " $Sessions.Count | Write-LogFile $strLogName
+"Найдено сессий: " + $Sessions.Count | Write-LogFile $strLogName
 $Sessions | ft | Write-LogFile $strLogName
 
 # Завершаем сессисии
@@ -189,7 +189,7 @@ if (!($Sessions.Count -eq 0))
 {
     write-host "Не удалость отключить сессий:" $Sessions.Count
     # Ошибка. Пишем в лог. Не удалость отключить часть сесссий
-    "Не удалость отключить сессий:" $Sessions.Count | Write-LogFile $strLogName
+    "Не удалость отключить сессий:" + $Sessions.Count | Write-LogFile $strLogName
     $Sessions | ft | Write-LogFile $strLogName
 }
 
