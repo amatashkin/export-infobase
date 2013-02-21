@@ -7,9 +7,6 @@
 
 param([string]$InfoBaseName, [string]$ServerName = "$Env:Computername", [string]$strLogPath = 'C:\Logs')
 
-# Проверяем входные параметры. Если нету - убегаем.
-if (!$strDBName) { "Database name is missing."; exit 11}
-if (!$strServerName) { "Servername name is missing."; exit 12}
 
 function Write-LogFile([string]$logFileName)
 {
@@ -60,6 +57,10 @@ $ServerAgent = ""
 $V82Com = ""
 $ClusterFound = $False
 $InfoBaseFound = $False
+
+# Проверяем входные параметры. Если нету - убегаем.
+if (!$InfoBaseName) { "Database name is missing."; exit 11}
+if (!$ServerName) { "Servername name is missing."; exit 12}
 
 # Указываем путь к 1С и проверяем наличие.
 $str1CPath='C:\Program Files (x86)\1cv82\common\1cestart.exe'
@@ -152,7 +153,7 @@ foreach ($WorkingProcess in $WorkingProcesses)
 # Проверка базы
 if (!($InfoBaseFound))
 {
-    write-host "Не найдена указанная информационная база."
+    write-host 'Не найдена указанная информационная база.'
     # пишем в лог
     break
 }
