@@ -5,6 +5,17 @@
 #  * блокирует соединений с ИБ
 #  * разрывает активные сессии в ИБ
 
+function Write-LogFile([string]$logFileName)
+{
+    Process
+    {
+        $_
+        $dt = Get-Date
+        $str = $dt.DateTime + " " + $_
+        $str | Out-File -FilePath $logFileName -Append
+    }
+}
+
 # Init
 $Cluster = ""
 $Clusters = ""
