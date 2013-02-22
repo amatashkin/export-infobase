@@ -175,12 +175,11 @@ $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 # Пишем в лог количество сессий
 write-host "Останавливаем сессий: " $Sessions.Count
 "Останавливаем сессий: " + $Sessions.Count | Write-LogFile $strLogName
-$Sessions | ft | Write-LogFile $strLogName
 
 # Завершаем сессисии
 foreach ($Session in $Sessions)
 {
-    "Пользователь " + $Session.username + " на " + $Session.host + " начало работы " + $Session.startedat.datetime + " приложение " + $Session.appid | Write-LogFile $strLogName
+    "Отключаем: " + $Session.username + " на " + $Session.host + " начало работы " + $Session.startedat.datetime + " приложение " + $Session.appid | Write-LogFile $strLogName
     $ServerAgent.TerminateSession($Cluster,$Session)
 }
 
@@ -191,7 +190,11 @@ if (!($Sessions.Count -eq 0))
     write-host "Не удалость отключить сессий:" $Sessions.Count
     # Ошибка. Пишем в лог. Не удалость отключить часть сесссий
     "Не удалость отключить сессий: " + $Sessions.Count | Write-LogFile $strLogName
-    $Sessions | ft | Write-LogFile $strLogName
+    foreach ($Session in $Sessions)
+    {
+        "Не удалось отключить: " + $Session.username + " на " + $Session.host + " начало работы " + $Session.startedat.datetime + " приложение " + $Session.appid | Write-LogFile $strLogName
+    }
+
 }
 
 # ===============================================
