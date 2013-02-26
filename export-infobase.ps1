@@ -112,7 +112,6 @@ foreach ($Cluster in $Clusters)
 if (!($ClusterFound))
 {
      # Пишем в лог что кластер не найден
-     write-host "Не найден кластер серверов 1С"
      "Не найден кластер серверов 1С" | Write-LogFile $strLogName
      break
 }
@@ -156,9 +155,8 @@ foreach ($WorkingProcess in $WorkingProcesses)
 # Проверка базы
 if (!($InfoBaseFound))
 {
-    write-host 'Не найдена указанная информационная база.'
-    'Не найдена указанная информационная база.' | Write-LogFile $strLogName
     # пишем в лог
+    'Не найдена указанная информационная база.' | Write-LogFile $strLogName
     break
 }
 
@@ -172,7 +170,6 @@ $Base = $ServerAgent.GetInfoBases($Cluster) | ? {$_.Name -eq $InfoBaseName}
 $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 
 # Пишем в лог количество сессий
-write-host "Останавливаем сессий: " $Sessions.Count
 "Останавливаем сессий: " + $Sessions.Count | Write-LogFile $strLogName
 
 # Завершаем сессисии
@@ -186,7 +183,6 @@ foreach ($Session in $Sessions)
 $Sessions = $ServerAgent.GetInfoBaseSessions($Cluster, $Base)
 if (!($Sessions.Count -eq 0))
 {
-    write-host "Не удалость отключить сессий:" $Sessions.Count
     # Ошибка. Пишем в лог. Не удалость отключить часть сесссий
     "Не удалость отключить сессий: " + $Sessions.Count | Write-LogFile $strLogName
     foreach ($Session in $Sessions)
@@ -199,7 +195,6 @@ if (!($Sessions.Count -eq 0))
 # ===============================================
 # 
 # Пробуем выгрузить .DT
-write-host "Выгрузка ИБ..."
 "Trying to backup $InfoBaseName at $ServerName" | Write-LogFile $strLogName
 "Starting $str1CPath" | Write-LogFile $strLogName
 "with parameters: $arguments1C" | Write-LogFile $strLogName
