@@ -8,6 +8,7 @@ $newComPackageName = "V82_COMCOnnector"
 
 # Путь к dll. Надо добавить автоопределение либо передачу параметра
 $dllPath = "C:\Program Files (x86)\1cv82\8.2.15.319\bin\comcntr.dll"
+if (!(Test-Path $dllPath)) {"Dll not found, exit"; exit}
 
 $appExistCheckApp = $apps | Where-Object {$_.Name -eq $newComPackageName}
 
