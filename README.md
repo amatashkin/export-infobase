@@ -20,4 +20,5 @@ PS> .\export-infobase.ps1 InfoBaseName
 ToDo
 ====
 
-[ ] Запись лога в EventLog
+ - Запись лога в EventLog
+ - Проверка наличия блокировки базы перед выгрузкой
