@@ -128,29 +128,28 @@ $WorkingProcesses = $ServerAgent.GetWorkingProcesses($Cluster)
 # Поиск нужной базы
 foreach ($WorkingProcess in $WorkingProcesses)
 {
-    if (!($WorkingProcess.Running -eq 1) )
+    if ($WorkingProcess.Running -eq 1)
     {
-        continue   
-    }
-     
-    $CWPAddr = "tcp://"+$WorkingProcess.HostName+":"+$WorkingProcess.MainPort  
-    $CWP= $V82Com.ConnectWorkingProcess($CWPAddr)
-    $CWP.AddAuthentication("", "")
+        $CWPAddr = "tcp://"+$WorkingProcess.HostName+":"+$WorkingProcess.MainPort
+        $CWP= $V82Com.ConnectWorkingProcess($CWPAddr)
+        $CWP.AddAuthentication("", "")
 
-    $InfoBases = $CWP.GetInfoBases()
-    
-    foreach ($InfoBase in $InfoBases)
-    {
-        if ($InfoBase.Name -eq $InfoBaseName )
+        $InfoBases = $CWP.GetInfoBases()
+
+        foreach ($InfoBase in $InfoBases)
         {
-            $InfoBaseFound = $True
+            if ($InfoBase.Name -eq $InfoBaseName )
+            {
+                $InfoBaseFound = $True
+                break
+            }
+        }
+
+        if ($InfoBaseFound)
+        {
             break
         }
-    }
 
-    if ($InfoBaseFound)
-    {
-        break
     }
 }
 
