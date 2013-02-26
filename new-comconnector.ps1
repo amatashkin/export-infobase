@@ -23,11 +23,13 @@ Else
     $newApp1.Value(“Name”) = $newComPackageName
     # Security Tab, Authorization Panel, “Enforce access checks for this application 
     $newApp1.Value(“ApplicationAccessChecksEnabled”) = 0 
-
+    $newApp1.Value("Description") = "1C 8.2 COM Connector"
+    $credential = Get-Credential
+    $newApp1.Value("Identity") = $credential.UserName
+    $newApp1.Value("Password") = $credential.GetNetworkCredential().password
 
     # Optional (to set to a specific Identify) 
-    # $newApp1.Value(“Identity”) = “MyDomain\myUserName”
-    # $newApp1.Value(“Password”) = “myPassword”
+
 
     $saveChangesResult = $apps.SaveChanges()
     "Results of the SaveChanges operation : $saveChangesResult"
