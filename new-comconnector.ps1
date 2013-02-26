@@ -20,9 +20,9 @@ if($appExistCheckApp)
 Else
 {
     $newApp1 = $apps.Add()
-    $newApp1.Value(“Name”) = $newComPackageName
+    $newApp1.Value("Name") = $newComPackageName
     # Security Tab, Authorization Panel, “Enforce access checks for this application 
-    $newApp1.Value(“ApplicationAccessChecksEnabled”) = 0 
+    $newApp1.Value("ApplicationAccessChecksEnabled") = 0 
     $newApp1.Value("Description") = "1C 8.2 COM Connector"
     $credential = Get-Credential
     $newApp1.Value("Identity") = $credential.UserName
