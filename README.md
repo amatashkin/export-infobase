@@ -14,6 +14,9 @@ PS> .\export-infobase.ps1 InfoBaseName
 
 На данный момент пишет логи в C:\Logs а DT в C:\1C_Backup\$Year\$InfoBaseName
 
+Для создания COM соединения можно использовать new-comconnector.ps1
+
+
 ToDo
 ====
 
